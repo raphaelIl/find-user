@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: test-python
+  name: test-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: test-python
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: test-python
+      name: test-python
+    spec:
+      containers:
+        - name: test-python
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: ""
+            - name: AWS_SECRET_ACCESS_KEY
+              value: ""
+            - name: E_HOURS
+              value: "17520" # 2 years
+          image: raphael1021/test-python
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+          resources:
+            {}
+      nodeSelector:
+        kubernetes.io/arch: arm64
